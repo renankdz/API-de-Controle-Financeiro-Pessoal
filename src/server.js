@@ -1,16 +1,15 @@
 const express = require('express');
 const app = express();
-
-const transactionRoutes = require('./src/routes/transactionRoutes');
+const transactionRoutes = require('./routes/transactionRoutes');
 
 app.use(express.json());
 
-// rota principal (pode manter)
+// rota principal
 app.get('/', (req, res) => {
   res.send('API rodando');
 });
 
-// 👇 aqui você conecta suas rotas novas
+// usa as rotas corretamente
 app.use('/transactions', transactionRoutes);
 
 app.listen(3000, () => {
