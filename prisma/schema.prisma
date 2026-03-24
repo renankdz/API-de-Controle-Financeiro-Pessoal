@@ -1,10 +1,17 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
 generator client {
   provider = "prisma-client-js"
 }
 
-datasource db {
-  provider = "sqlite"
-  url      = env("DATABASE_URL")
+model User {
+  id       Int     @id @default(autoincrement())
+  email    String  @unique
+  password String
+  transactions Transaction[]
 }
 
 model Transaction {
@@ -14,4 +21,5 @@ model Transaction {
   type     String
   category String
   userId   Int
+  user     User    @relation(fields: [userId], references: [id])
 }

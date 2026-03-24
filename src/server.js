@@ -1,6 +1,10 @@
+require('dotenv').config();
+
 const express = require('express');
 const app = express();
 const transactionRoutes = require('./routes/transactionRoutes');
+
+console.log(process.env.DATABASE_URL);
 
 app.use(express.json());
 
