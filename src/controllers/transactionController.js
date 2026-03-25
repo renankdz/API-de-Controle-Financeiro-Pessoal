@@ -20,9 +20,35 @@ exports.createUser = async (req, res) => {
     res.status(500).json({ error: 'Erro ao criar usuário' });
   }
 };
+exports.createUser = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const user = await prisma.user.create({
+      data: {
+        email,
+        password: hashedPassword
+      }
+    });
+
+    res.json(user);
+
+  } catch (error) {
+    console.error(error);
+
+    if (error.code === 'P2002') {
+      return res.status(400).json({ error: 'Email já está em uso' });
+    }
+
+    res.status(500).json({ error: 'Erro ao criar usuário' });
+  }
+};
 exports.create = async (req, res) => {
   try {
-    const { title, amount, type, category, userId } = req.body;
+    const { title, amount, type, category } = req.body;
+    const userId = req.userId; // obtém o userId do token decodificado no middleware de autenticação
 
     // validação básica
     if (!title || !amount || !type || !category || !userId) {
@@ -48,7 +74,13 @@ exports.create = async (req, res) => {
 };
 exports.getAll = async (req, res) => {
   try {
-    const transactions = await prisma.transaction.findMany();
+    const userId = req.user.id;
+
+const transactions = await prisma.transaction.findMany({
+  where: {
+    userId
+  }
+});
     res.json(transactions);
   } catch (error) {
     res.status(500).json({ error: 'Erro ao listar transações' });

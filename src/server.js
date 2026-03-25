@@ -2,10 +2,12 @@ require('dotenv').config();
 
 const express = require('express');
 const app = express();
+
 const transactionRoutes = require('./routes/transactionRoutes');
+const authRoutes = require('./routes/authRoutes');
+const userRoutes = require('./routes/userRoutes');
 
-console.log(process.env.DATABASE_URL);
-
+// PRIMEIRO: middleware
 app.use(express.json());
 
 // rota principal
@@ -13,7 +15,9 @@ app.get('/', (req, res) => {
   res.send('API rodando');
 });
 
-// usa as rotas corretamente
+// rotas
+app.use('/auth', authRoutes);
+app.use('/users', userRoutes);
 app.use('/transactions', transactionRoutes);
 
 app.listen(3000, () => {
